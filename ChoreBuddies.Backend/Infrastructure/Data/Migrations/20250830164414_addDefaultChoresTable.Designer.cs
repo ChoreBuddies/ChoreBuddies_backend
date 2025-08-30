@@ -4,6 +4,7 @@ using ChoreBuddies.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ChoreBuddiesDbContext))]
-    partial class ChoreBuddiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250830164414_addDefaultChoresTable")]
+    partial class addDefaultChoresTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,9 +52,6 @@ namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("HouseholdId")
-                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -90,8 +90,6 @@ namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HouseholdId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -135,36 +133,6 @@ namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
                     b.ToTable("DefaultChores");
                 });
 
-            modelBuilder.Entity("ChoreBuddies.Backend.Domain.Household", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("Households");
-                });
-
             modelBuilder.Entity("ChoreBuddies.Backend.Features.Chores.Chore", b =>
                 {
                     b.Property<string>("Id")
@@ -179,9 +147,6 @@ namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("HouseholdId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -198,8 +163,6 @@ namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HouseholdId");
 
                     b.ToTable("Chores");
                 });
@@ -337,31 +300,6 @@ namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ChoreBuddies.Backend.Domain.ApplicationUser", b =>
-                {
-                    b.HasOne("ChoreBuddies.Backend.Domain.Household", null)
-                        .WithMany("Users")
-                        .HasForeignKey("HouseholdId");
-                });
-
-            modelBuilder.Entity("ChoreBuddies.Backend.Domain.Household", b =>
-                {
-                    b.HasOne("ChoreBuddies.Backend.Domain.ApplicationUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("ChoreBuddies.Backend.Features.Chores.Chore", b =>
-                {
-                    b.HasOne("ChoreBuddies.Backend.Domain.Household", null)
-                        .WithMany("Chores")
-                        .HasForeignKey("HouseholdId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -411,13 +349,6 @@ namespace ChoreBuddies.Backend.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ChoreBuddies.Backend.Domain.Household", b =>
-                {
-                    b.Navigation("Chores");
-
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
